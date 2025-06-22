@@ -6,7 +6,8 @@ from model_setup import load_model
 from gemini_advisor import analyze_image_for_cleanliness
 import os
 from datetime import datetime
-
+from io import BytesIO
+import base64
 app = Flask(__name__)
 
 # --- アップロード保存先フォルダ ---
@@ -52,12 +53,15 @@ def predict():
 
     # Gemini API によるアドバイス
     gemini_advice = analyze_image_for_cleanliness(save_path)
-
+    # 画像をBase64に変換
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return jsonify({
-        "filename": filename,
-        "result": gemini_advice.state,
+        "state": gemini_advice.state,
         "advice": gemini_advice.advice,
-        "score": gemini_advice.score
+        "score": gemini_advice.score,
+        "image": img_str
     })
 
 # --- サーバー起動 ---
