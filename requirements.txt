@@ -1,3 +1,8 @@
 flask
-gunicorn
+torch
+torchvision
 Pillow
+opencv-python
+numpy
+requests
+google-generativeai
